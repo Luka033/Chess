@@ -17,6 +17,7 @@ class Board:
         idx = self.board.index(piece)
         self.board[ROWS * row + col] = piece
         self.board[idx] = 0
+
         piece.move(row, col)
         # # Debugging
         # for i in range(0, len(self.board), 8):
@@ -25,24 +26,24 @@ class Board:
 
     def get_piece(self, row, col):
         return self.board[ROWS * row + col]
-        # return self.board[row][col]
 
     def get_board(self):
         return self.board
 
     def create_board(self):
-        self.board = [0, 0, 0, 0, 0, 0, Knight(0, 6, WHITE), 0,
-                      Knight(1, 0, WHITE), 0, 0, 0, 0, 0, 0, 0,
+        self.board = [0, 0, 0, 0, 0, 0, Knight(6, WHITE), 0,
+                      Knight(8, WHITE), 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, Knight(3, 4, BLACK), 0, 0, 0,
+                      0, 0, 0, 0, Knight(28, BLACK), 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, Knight(7, 6, BLACK), 0]
+                      0, 0, 0, 0, 0, 0, Knight(62, BLACK), 0]
 
 
 
     def draw(self, win):
+        win.fill(BLACK)
         self.draw_squares(win)
         for row in range(ROWS):
             for col in range(COLS):

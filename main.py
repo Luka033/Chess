@@ -4,7 +4,7 @@ from checkers.game import Game
 
 FPS = 60
 
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((WIDTH + 200, HEIGHT))
 pygame.display.set_caption('Chess')
 
 

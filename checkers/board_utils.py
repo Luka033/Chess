@@ -10,7 +10,7 @@ def init_column(column_number):
     return column
 
 def is_valid_tile_coordinate(coordinate):
-    return coordinate >= 0 and coordinate < NUM_TILES
+    return (0 <= coordinate < NUM_TILES)
 
 
 FIRST_COLUMN = init_column(0)
