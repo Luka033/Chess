@@ -5,7 +5,6 @@ from .piece import Piece, Knight
 class Board:
     def __init__(self):
         self.board = []
-        self.selected_piece = None
         self.black_left = self.white_left = 16
 
         self.create_board()
@@ -14,10 +13,15 @@ class Board:
         win.blit(BG_BOARD, (0, 0))
 
     def move(self, piece, row, col):
-        self.board[ROWS * piece.row + piece.col], self.board[ROWS * row + col] = self.board[ROWS * row + col], self.board[ROWS * piece.row + piece.col]
-
-        # self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
+        # self.board[ROWS * piece.row + piece.col], self.board[ROWS * row + col] = self.board[ROWS * row + col], self.board[ROWS * piece.row + piece.col]
+        idx = self.board.index(piece)
+        self.board[ROWS * row + col] = piece
+        self.board[idx] = 0
         piece.move(row, col)
+        # # Debugging
+        # for i in range(0, len(self.board), 8):
+        #     print(self.board[i: i+8])
+
 
     def get_piece(self, row, col):
         return self.board[ROWS * row + col]
@@ -27,22 +31,14 @@ class Board:
         return self.board
 
     def create_board(self):
-        # self.board = [[0, Knight(0, 1, WHITE), 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0],
-        #               [0, 0, 0, 0, 0, 0, 0, 0]]
-        self.board = [0, 0, 0, 0, 0, 0, 0, 0,
+        self.board = [0, 0, 0, 0, 0, 0, Knight(0, 6, WHITE), 0,
                       Knight(1, 0, WHITE), 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, Knight(3, 4, WHITE), 0, 0, 0,
+                      0, 0, 0, 0, Knight(3, 4, BLACK), 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0, 0]
+                      0, 0, 0, 0, 0, 0, Knight(7, 6, BLACK), 0]
 
 
 
@@ -53,6 +49,7 @@ class Board:
                 piece = self.board[ROWS * row + col]
                 if piece != 0:
                     piece.draw(win)
+
 
 
 

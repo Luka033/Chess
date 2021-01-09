@@ -53,21 +53,6 @@ class Knight(Piece):
         else:
             self.img = B_KNIGHT
 
-    # def calculate_legal_moves(self, board):
-    #     legal_moves = []
-    #     idx = board.index(self)
-    #     print("Index: ", idx)
-    #     col = idx % 8
-    #     for counter in range(idx, len(board)):
-    #         # if col == 0:
-    #         print("Counter: ", counter)
-    #         if not self.isFirstColumnExclusion(counter, counter - idx):
-    #             if counter == (idx+6) or counter == (idx+10) or counter == (idx+15) or counter == (idx+17):
-    #                 legal_moves.append(counter)
-    #         # counter += 1
-    #
-    #     print(legal_moves)
-    #     # print(board)
 
     def calculate_legal_moves(self, board):
         legal_moves = []
