@@ -29,10 +29,10 @@ class Rook(Piece):
 
                 destination_coordinate += current_offset
                 if is_valid_tile_coordinate(destination_coordinate):
-                    if board[destination_coordinate] == 0:
+                    if not self.is_tile_occupied(board, destination_coordinate):
                         legal_moves.append(destination_coordinate)
                     else:
-                        if not self.occupied_by_ally(board, destination_coordinate):
+                        if not self.is_tile_occupied_by_ally(board, destination_coordinate):
                             legal_moves.append(destination_coordinate)
                         break
 

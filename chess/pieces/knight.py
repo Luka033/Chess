@@ -23,7 +23,7 @@ class Knight(Piece):
             destination_coordinate = piece_position + current_offset
             if is_valid_tile_coordinate(destination_coordinate):
                 if self.__is_first_column_exclusion(piece_position, current_offset) or \
-                        self.occupied_by_ally(board, destination_coordinate) or \
+                        self.is_tile_occupied_by_ally(board, destination_coordinate) or \
                         self.__is_second_column_exclusion(piece_position, current_offset) or \
                         self.__is_seventh_column_exclusion(piece_position, current_offset) or \
                         self.__is_eight_column_exclusion(piece_position, current_offset):

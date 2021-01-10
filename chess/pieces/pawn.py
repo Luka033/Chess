@@ -26,32 +26,24 @@ class Pawn(Piece):
             if not is_valid_tile_coordinate(destination_coordinate):
                 continue
 
-            if current_offset == 8 and board[destination_coordinate] == 0:
+            if current_offset == 8 and not self.is_tile_occupied(board, destination_coordinate):
                 # TODO: PAWN promotion square
                 legal_moves.append(destination_coordinate)
 
 
-            # # TODO: ADD first move check
-            # elif current_offset == 16 and \
-            #     (SEVENTH_RANK[idx] and self.color == WHITE or
-            #     SECOND_RANK[idx] and self.color == BLACK):
-            #     behind_candidate_destination_coordinate = idx + (self.direction * 8)
-            #     if board[behind_candidate_destination_coordinate] == 0 and \
-            #         board[destination_coordinate] == 0:
-            #         legal_moves.append(destination_coordinate)
-
+            # # TODO: ADD first move check (maybe not needed because of row check)
             elif current_offset == 16 and \
                     (piece_is_in_given_row(piece_position, 6) and self.color == WHITE or
                      piece_is_in_given_row(piece_position, 1) and self.color == BLACK):
                 behind_candidate_destination_coordinate = piece_position + (self.direction * 8)
-                if board[behind_candidate_destination_coordinate] == 0 and \
-                    board[destination_coordinate] == 0:
+                if not self.is_tile_occupied(board, behind_candidate_destination_coordinate) and \
+                    not self.is_tile_occupied(board, destination_coordinate):
                     legal_moves.append(destination_coordinate)
 
             elif current_offset == 7 and not \
                     (piece_is_in_given_column(piece_position, 7) and self.color == WHITE or
                      piece_is_in_given_column(piece_position, 0) and self.color == BLACK):
-                if board[destination_coordinate] != 0:
+                if self.is_tile_occupied(board, destination_coordinate):
                     piece_on_candidate = board[destination_coordinate]
                     if self.color != piece_on_candidate.color:
                         # TODO: Add promotion square
@@ -62,7 +54,7 @@ class Pawn(Piece):
             elif current_offset == 9 and not \
                     (piece_is_in_given_column(piece_position, 0) and self.color == WHITE or
                      piece_is_in_given_column(piece_position, 7) and self.color == BLACK):
-                if board[destination_coordinate] != 0:
+                if self.is_tile_occupied(board, destination_coordinate):
                     piece_on_candidate = board[destination_coordinate]
                     if self.color != piece_on_candidate.color:
                         # TODO: Add promotion square
@@ -70,3 +62,6 @@ class Pawn(Piece):
                 # elif TODO: Add enpassantPawn
 
         return legal_moves
+
+
+
