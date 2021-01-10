@@ -1,6 +1,6 @@
 import pygame
-from .constants import BLACK, WHITE, ROWS, GREEN, SQUARE_SIZE, WIDTH
-from checkers.board import Board
+from .constants import BLACK, WHITE, ROWS, GREEN, SQUARE_SIZE, WIDTH, GREEN_BOX
+from chess.board import Board
 pygame.font.init()
 
 class Game:
@@ -61,8 +61,8 @@ class Game:
         for move in moves:
             row = move // ROWS
             col = move % ROWS
-            # pygame.draw.circle(self.win, GREEN, (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 5)
-            pygame.draw.rect(self.win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 2)
+            # pygame.draw.rect(self.win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 2)
+            self.win.blit(GREEN_BOX, (col * SQUARE_SIZE, row * SQUARE_SIZE))
 
 
     def change_turn(self):
