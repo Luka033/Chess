@@ -13,25 +13,25 @@ class Board:
         self.board = []
         self.black_left = self.white_left = 16
 
-        self.create_board()
+        self.__create_board()
 
     def draw_squares(self, win):
         win.blit(BG_BOARD, (0, 0))
 
     def move(self, piece, row, col):
-        idx = self.board.index(piece)
+        piece_position = self.board.index(piece)
         self.board[ROWS * row + col] = piece
-        self.board[idx] = 0
+        self.board[piece_position] = 0
         piece.move(row, col)
 
         if str(piece) == "Pawn":
-            self.pawn_promotion(piece)
+            self.__pawn_promotion(piece)
 
         # # Debugging
         # for i in range(0, len(self.board), 8):
         #     print(self.board[i: i+8])
 
-    def pawn_promotion(self, piece):
+    def __pawn_promotion(self, piece):
         if piece_is_in_given_row(piece.tile_index, 0) and piece.color == WHITE:
             self.board[piece.tile_index] = Queen(piece.tile_index, WHITE)
         if piece_is_in_given_row(piece.tile_index, 7) and piece.color == BLACK:
@@ -43,15 +43,17 @@ class Board:
     def get_board(self):
         return self.board
 
-    def create_board(self):
-        self.board = [Rook(0, BLACK), 0, 0, 0, 0, 0, 0, 0,
-                      Pawn(8, BLACK), 0, 0, 0, 0, 0, 0, 0,
+    def __create_board(self):
+        self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
+                      Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, Pawn(51, WHITE), 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0, 0]
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
+                      Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
 
         # self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
         #               Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),

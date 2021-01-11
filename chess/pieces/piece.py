@@ -27,9 +27,6 @@ class Piece:
     def move(self, row, col):
         self.tile_index = (ROWS * row + col)
 
-
-
-
     # Takes in the current board and the desired destination coordinate. Returns True if the tile is occupied
     # by the same color Piece
     def is_tile_occupied_by_ally(self, board, coordinate):
@@ -39,6 +36,12 @@ class Piece:
 
     def is_tile_occupied(self, board, coordinate):
         return board[coordinate] != 0
+
+    def get_piece_color(self):
+        if 255 in self.color:
+            return "White"
+        else:
+            return "Black"
 
     def __repr__(self):
         return str(type(self).__name__)
