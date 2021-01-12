@@ -33,7 +33,7 @@ class King(Piece):
 
 
     def __is_first_column_exclusion(self, current_position, candidate_offset):
-        return piece_is_in_given_column(current_position, 1) and (candidate_offset == -9 or candidate_offset == -1 or candidate_offset == 7)
+        return piece_is_in_given_column(current_position, 0) and (candidate_offset == -9 or candidate_offset == -1 or candidate_offset == 7)
 
 
     def __is_eight_column_exclusion(self, current_position, candidate_offset):
