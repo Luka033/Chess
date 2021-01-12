@@ -34,9 +34,10 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 row, col = get_row_col_from_mouse(pos)
+
                 # print(f"Row: {row}, Col: {col}")
                 if col <= 7:
-                    game.select(row, col)
+                    game.select((8 * row + col))
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_r]:

@@ -18,18 +18,14 @@ class Board:
     def draw_squares(self, win):
         win.blit(BG_BOARD, (0, 0))
 
-    def move(self, piece, row, col):
+    def move(self, piece, coordinate):
         piece_position = self.board.index(piece)
-        self.board[ROWS * row + col] = piece
+        self.board[coordinate] = piece
         self.board[piece_position] = 0
-        piece.move(row, col)
+        piece.move(coordinate)
 
         if str(piece) == "Pawn":
             self.__pawn_promotion(piece)
-
-        # # Debugging
-        # for i in range(0, len(self.board), 8):
-        #     print(self.board[i: i+8])
 
     def __pawn_promotion(self, piece):
         if piece_is_in_given_row(piece.tile_index, 0) and piece.color == WHITE:
@@ -37,8 +33,8 @@ class Board:
         if piece_is_in_given_row(piece.tile_index, 7) and piece.color == BLACK:
             self.board[piece.tile_index] = Queen(piece.tile_index, BLACK)
 
-    def get_piece(self, row, col):
-        return self.board[ROWS * row + col]
+    def get_piece(self, coordinate):
+        return self.board[coordinate]
 
     def get_board(self):
         return self.board
@@ -53,6 +49,7 @@ class Board:
         #               0, 0, 0, 0, 0, 0, 0, 0,
         #               Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
         #               Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
+
 
         # self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
         #               Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),

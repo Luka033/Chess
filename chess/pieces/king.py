@@ -8,12 +8,10 @@ class King(Piece):
 
     def __init__(self, tile_index, color):
         super().__init__(tile_index, color)
-
         if self.color == WHITE:
             self.img = W_KING
         else:
             self.img = B_KING
-
 
     def calculate_legal_moves(self, board):
         legal_moves = []
@@ -34,7 +32,6 @@ class King(Piece):
 
     def __is_first_column_exclusion(self, current_position, candidate_offset):
         return piece_is_in_given_column(current_position, 0) and (candidate_offset == -9 or candidate_offset == -1 or candidate_offset == 7)
-
 
     def __is_eight_column_exclusion(self, current_position, candidate_offset):
         return piece_is_in_given_column(current_position, 7) and (candidate_offset == -7 or candidate_offset == 1 or candidate_offset == 9)

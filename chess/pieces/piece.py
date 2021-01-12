@@ -24,8 +24,8 @@ class Piece:
         col = self.tile_index % ROWS
         win.blit(self.img, (col * SQUARE_SIZE + B_KNIGHT.get_width() // 2 - 10, row * SQUARE_SIZE + B_KNIGHT.get_height() // 2 - 10))
 
-    def move(self, row, col):
-        self.tile_index = (ROWS * row + col)
+    def move(self, coordinate):
+        self.tile_index = coordinate
 
     # Takes in the current board and the desired destination coordinate. Returns True if the tile is occupied
     # by the same color Piece
