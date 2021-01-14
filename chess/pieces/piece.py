@@ -1,7 +1,5 @@
 import abc
 from chess.constants import WHITE, BLACK, SQUARE_SIZE, B_KNIGHT, ROWS
-from chess.board_utils import piece_is_in_given_row
-
 
 
 class Piece:
@@ -9,6 +7,7 @@ class Piece:
         self.tile_index = tile_index
         self.color = color
         self.img = None
+        self.notation = str(self)[:1]
 
         if self.color == BLACK:
             self.direction = -1
@@ -27,8 +26,10 @@ class Piece:
     def move(self, coordinate):
         self.tile_index = coordinate
 
-    # Takes in the current board and the desired destination coordinate. Returns True if the tile is occupied
-    # by the same color Piece
+    '''
+    Takes in the current board and the desired destination coordinate. Returns True if the tile is occupied
+    by the same color Piece and False otherwise
+    '''
     def is_tile_occupied_by_ally(self, board, coordinate):
         if self.is_tile_occupied(board, coordinate):
             return board[coordinate].color == self.color

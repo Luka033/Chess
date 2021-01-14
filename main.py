@@ -1,6 +1,7 @@
 import pygame
-from chess.constants import WIDTH, HEIGHT, SQUARE_SIZE, BG_BOARD
+from chess.constants import WIDTH, HEIGHT, SQUARE_SIZE, ROWS, BLACK
 from chess.game import Game
+from minimax.algorithm import minimax
 
 FPS = 60
 
@@ -27,6 +28,18 @@ def main():
     while run:
         clock.tick(FPS)
 
+        if game.turn == BLACK:
+            value, new_board = minimax(game.board.get_board(), 3, BLACK, game)
+            print(f"Value {value}")
+            # Debugging
+            # for i in range(0, len(new_board), 8):
+            #     print(new_board[i: i+8])
+            game.ai_move(new_board)
+
+            print("=======================DONE================================================")
+
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -35,7 +48,6 @@ def main():
                 pos = pygame.mouse.get_pos()
                 row, col = get_row_col_from_mouse(pos)
 
-                # print(f"Row: {row}, Col: {col}")
                 if col <= 7:
                     game.select((8 * row + col))
 

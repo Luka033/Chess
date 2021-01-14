@@ -11,12 +11,35 @@ from chess.board_utils import piece_is_in_given_row
 class Board:
     def __init__(self):
         self.board = []
+        self.__create_board()
+
         self.black_left = self.white_left = 16
 
-        self.__create_board()
+
 
     def draw_squares(self, win):
         win.blit(BG_BOARD, (0, 0))
+
+    '''
+    Takes in a list of pieces and a board. Returns a dictionary where keys are pieces and values are the
+    corresponding legal moves
+    '''
+    def get_player_moves(self, pieces, temp_board):
+        all_moves = set()
+        for piece in pieces:
+            all_moves.update(piece.calculate_legal_moves(temp_board))
+
+        return list(all_moves)
+
+
+    '''
+    Returns all pieces of the given color on the given board
+    '''
+    def get_player_pieces(self, color, temp_board):
+        pieces = [piece for piece in temp_board if piece != 0 and piece.color == color]
+        return pieces
+
+
 
     def move(self, piece, coordinate):
         piece_position = self.board.index(piece)
