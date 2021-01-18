@@ -8,7 +8,7 @@ class Rook(Piece):
 
     def __init__(self, tile_index, color):
         super().__init__(tile_index, color)
-
+        self.piece_value = 500
         if self.color == WHITE:
             self.img = W_ROOK
         else:

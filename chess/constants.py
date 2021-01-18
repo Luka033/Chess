@@ -44,6 +44,12 @@ ALGEBRAIC_NOTATION = ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
                       "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
 
 
+CHECK_BONUS = 50
+CHECK_MATE_BONUS = 10000
+DEPTH_BONUS = 100
+CAPTURED_PIECE_BONUS = 20
+
+
 
 
 

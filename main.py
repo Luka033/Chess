@@ -30,15 +30,11 @@ def main():
 
         if game.turn == BLACK:
             value, new_board = minimax(game.board.get_board(), 3, BLACK, game)
+            print("BOARD: ", new_board)
             print(f"Value {value}")
-            # Debugging
-            # for i in range(0, len(new_board), 8):
-            #     print(new_board[i: i+8])
+            # print("King pos: ", game.get_king_position(new_board))
+            # print("Evaluated: ", game.evaluate(1, new_board))
             game.ai_move(new_board)
-
-            print("=======================DONE================================================")
-
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,10 +51,7 @@ def main():
             if keys[pygame.K_r]:
                 game.reset()
 
-
-
         game.update()
-
     pygame.quit()
 
 

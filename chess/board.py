@@ -73,6 +73,17 @@ class Board:
         #               Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
         #               Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
 
+        self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
+                      Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, King(60, WHITE),
+                      0, 0, 0]
+
 
         # self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
         #               Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
@@ -85,18 +96,18 @@ class Board:
         #               Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
         #               Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
 
-        self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
-                      Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
-                      Pawn(8, BLACK), Pawn(9, BLACK), Pawn(10, BLACK), Pawn(11, BLACK), Pawn(12, BLACK),
-                      Pawn(13, BLACK), Pawn(14, BLACK), Pawn(15, BLACK),
-                      0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0, 0,
-                      0, 0, 0, 0, 0, 0, 0, 0,
-                      Pawn(48, WHITE), Pawn(49, WHITE), Pawn(50, WHITE), Pawn(51, WHITE), Pawn(52, WHITE),
-                      Pawn(53, WHITE), Pawn(54, WHITE), Pawn(55, WHITE),
-                      Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
-                      Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
+        # self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
+        #               Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
+        #               Pawn(8, BLACK), Pawn(9, BLACK), Pawn(10, BLACK), Pawn(11, BLACK), Pawn(12, BLACK),
+        #               Pawn(13, BLACK), Pawn(14, BLACK), Pawn(15, BLACK),
+        #               0, 0, 0, 0, 0, 0, 0, 0,
+        #               0, 0, 0, 0, 0, 0, 0, 0,
+        #               0, 0, 0, 0, 0, 0, 0, 0,
+        #               0, 0, 0, 0, 0, 0, 0, 0,
+        #               Pawn(48, WHITE), Pawn(49, WHITE), Pawn(50, WHITE), Pawn(51, WHITE), Pawn(52, WHITE),
+        #               Pawn(53, WHITE), Pawn(54, WHITE), Pawn(55, WHITE),
+        #               Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
+        #               Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
 
 
     def draw(self, win):

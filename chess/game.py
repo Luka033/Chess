@@ -1,8 +1,10 @@
 import pygame
-from .constants import BLACK, WHITE, ROWS, SQUARE_SIZE, WIDTH, GREEN_BOX, ALGEBRAIC_NOTATION
+from .constants import BLACK, WHITE, ROWS, SQUARE_SIZE, GREEN_BOX
+from .constants import CHECK_BONUS, DEPTH_BONUS, CAPTURED_PIECE_BONUS, CHECK_MATE_BONUS
 from chess.board import Board
-from itertools import chain
-from copy import deepcopy, copy
+
+
+
 
 pygame.font.init()
 
@@ -26,7 +28,7 @@ class Game:
             self.draw_valid_moves(self.valid_moves)
         # self.__display_text(f"Turn: {self.color_value.get(self.turn)}", WIDTH + 10, 10, (255, 255, 255))
         if self.check_mate:
-            self.__display_text(f"Check Mate!! {self.color_value.get(self.__get_opposing_color())} Wins!!", 150, 350, (255, 0, 0))
+            self.__display_text(f"Check Mate!! {self.color_value.get(self.__get_opposing_color(self.turn))} Wins!!", 150, 350, (255, 0, 0))
             self.__display_text(f"Press R to restart", 300, 450, (255, 0, 0))
         pygame.display.update()
 
@@ -37,8 +39,8 @@ class Game:
     def reset(self):
         self._init()
 
-    def __get_opposing_color(self):
-        if self.turn == WHITE:
+    def __get_opposing_color(self, color):
+        if color == WHITE:
             return BLACK
         else:
             return WHITE
@@ -51,7 +53,7 @@ class Game:
         if self.selected:
             destination_coordinate = coordinate
             temp_board = self.simulate_move(self.selected, destination_coordinate, self.board.get_board().copy())
-            if self.is_in_check(temp_board):
+            if self.is_in_check(temp_board, self.__get_opposing_color(self.turn)):
                 print("CHECK!!!")
                 self.selected = None
                 self.select(coordinate)
@@ -69,9 +71,9 @@ class Game:
 
         return False
 
-    def get_current_players_king_position(self, board):
+    def get_king_position(self, board, color):
         for i in range(len(board)):
-            if str(board[i]) == 'King' and board[i].color == self.turn:
+            if str(board[i]) == 'King' and board[i].color == color:
                 return i
         return -1 # Should not happen
 
@@ -80,23 +82,28 @@ class Game:
     Takes in a board and a king position. Calculates all the moves of the opposing player. Returns whether
     or not the given king position is in the list of opponent moves i.e. is in check
     '''
-    def is_in_check(self, temp_board):
-        temp_king_pos = self.get_current_players_king_position(temp_board)
-        enemy_pieces = self.board.get_player_pieces(self.__get_opposing_color(), temp_board)
+    def is_in_check(self, temp_board, color):
+        temp_king_pos = self.get_king_position(temp_board, self.__get_opposing_color(color))
+        enemy_pieces = self.board.get_player_pieces(color, temp_board)
         current_enemy_moves = self.board.get_player_moves(enemy_pieces, temp_board)
+
+        # print("TURN: ", self.color_value.get(self.turn))
+        # print("KING POS: ", temp_king_pos)
+        # print("MOVES: ", current_enemy_moves)
+
         return temp_king_pos in current_enemy_moves
 
-    def is_check_mate(self, board):
+    def is_check_mate(self, board, color):
         # Get all current player pieces
-        player_pieces = self.board.get_player_pieces(self.turn, board)
+        player_pieces = self.board.get_player_pieces(color, board)
         # Use that to get all current player moves
         for piece in player_pieces:
             current_player_moves = piece.calculate_legal_moves(board)
             for move in current_player_moves:
                 # make every move on the temporary board and return that board and king position
-                _temp_board = self.simulate_move(piece, move, self.board.get_board().copy())
+                _temp_board = self.simulate_move(piece, move, board.copy())
                 # if on of the moves does not result in check i.e. there is a valid move, return false
-                if not self.is_in_check(_temp_board):
+                if not self.is_in_check(_temp_board, self.__get_opposing_color(color)):
                     return False
         return True
 
@@ -105,7 +112,6 @@ class Game:
     new board. Updates the king position if necessary. Returns the new board and the new king position.
     '''
     def simulate_move(self, piece, destination_coordinate, temp_board):
-        # print(f"Piece: {piece}, Move: {destination_coordinate}")
         piece_position = piece.tile_index
         temp_board[destination_coordinate] = piece
         temp_board[piece_position] = 0
@@ -139,8 +145,8 @@ class Game:
         else:
             self.turn = BLACK
 
-        if self.is_check_mate(self.board.get_board()):
-            print("CHECK MATE!")
+        if self.is_check_mate(self.board.get_board(), self.turn):
+            # print("CHECK MATE!")
             self.check_mate = True
 
 
@@ -167,13 +173,34 @@ class Game:
         self.change_turn()
 
 
-    def evaluate(self):
-        score = 0
-        if self.is_in_check(self.board.get_board()):
-            score += 50
-        if self.check_mate:
-            score += 10000
-        return 100
+
+
+    def evaluate(self, depth, board):
+        # print("CHCKMATE: ", self.__checkmate(depth, board))
+        return self.__check(board) + self.__checkmate(depth, board) + self.__mobility() + self.__piece_value()
+
+        # return self.__checkmate(depth, board)
+
+    def __checkmate(self, depth, board):
+        # print(self.check_mate)
+        return CHECK_MATE_BONUS * self.__depth_bonus(depth) if self.is_check_mate(board, self.__get_opposing_color(self.turn)) else 0
+
+    def __depth_bonus(self, depth):
+        return 1 if depth == 0 else DEPTH_BONUS * depth
+
+    def __check(self, board):
+
+        return CHECK_BONUS if self.is_in_check(board, self.turn) else 0
+
+    def __mobility(self):
+        return len(self.valid_moves)
+
+    def __piece_value(self):
+        piece_value_score = 0
+        pieces = self.board.get_player_pieces(self.turn, self.board.get_board())
+        for piece in pieces:
+            piece_value_score += piece.piece_value
+        return piece_value_score
 
 
 

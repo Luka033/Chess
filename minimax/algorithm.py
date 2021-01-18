@@ -5,6 +5,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 
+
+
 def minimax(position, depth, max_player, game):
     # print("Position: ", position)
     # print("DEPTH: ", depth)
@@ -12,7 +14,8 @@ def minimax(position, depth, max_player, game):
     # print("GAME: ", game)
 
     if depth == 0 or game.check_mate:
-        return game.evaluate(), position
+        print("EVALUATED NOW: ", game.evaluate(depth, position))
+        return game.evaluate(depth, position), position
 
     if max_player:
         max_eval = float('-inf')
@@ -44,10 +47,8 @@ def get_all_moves(board, color, game):
             # make every move on the temporary board and return that board and king position
             temp_board = board.copy()
             new_board = game.simulate_move(piece, move, temp_board)
-            if not game.is_in_check(new_board):
+            if not game.is_in_check(new_board, color):
                 moves.append(new_board)
-    if len(moves) == 0:
-        game.check_mate = True
     return moves
 
 
