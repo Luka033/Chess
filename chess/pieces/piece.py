@@ -38,12 +38,6 @@ class Piece:
     def is_tile_occupied(self, board, coordinate):
         return board[coordinate] != 0
 
-    def get_piece_color(self):
-        if 255 in self.color:
-            return "White"
-        else:
-            return "Black"
-
     def __repr__(self):
         return str(type(self).__name__)
 

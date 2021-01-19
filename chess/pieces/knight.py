@@ -9,6 +9,7 @@ class Knight(Piece):
     def __init__(self, tile_index, color):
         super().__init__(tile_index, color)
         self.piece_value = 300
+        self.notation = "N"
         if self.color == WHITE:
             self.img = W_KNIGHT
         else:

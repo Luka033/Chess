@@ -1,6 +1,6 @@
 import pygame
 from .constants import BLACK, WHITE, ROWS, SQUARE_SIZE, GREEN_BOX
-from .constants import CHECK_BONUS, DEPTH_BONUS, CAPTURED_PIECE_BONUS, CHECK_MATE_BONUS
+from .constants import CHECK_BONUS, DEPTH_BONUS, CAPTURED_PIECE_BONUS, CHECK_MATE_BONUS, ALGEBRAIC_NOTATION
 from chess.board import Board
 
 
@@ -10,9 +10,9 @@ pygame.font.init()
 
 class Game:
     def __init__(self, win):
-        self._init()
         self.win = win
         self.color_value = {(255, 255, 255): "White", (0, 0, 0): "Black"}
+        self._init()
 
     def _init(self):
         self.selected = None
@@ -20,20 +20,37 @@ class Game:
         self.turn = WHITE
         self.valid_moves = []
         self.check_mate = False
-        self.large_font = pygame.font.SysFont("comicsans", 30)
+        self.large_font = pygame.font.SysFont("comicsans", 50)
+        self.small_font = pygame.font.SysFont("comicsans", 18)
+        self.move_x, self.move_y = 805, 40
+        self.__draw_static_text()
+
+    def __draw_static_text(self):
+        self.win.fill(BLACK)
+        self.__display_text(self.small_font, 'WHITE | BLACK | WHITE | BLACK', 800, 20, (255, 255, 255))
 
     def update(self):
         self.board.draw(self.win)
         if self.selected:
             self.draw_valid_moves(self.valid_moves)
-        # self.__display_text(f"Turn: {self.color_value.get(self.turn)}", WIDTH + 10, 10, (255, 255, 255))
         if self.check_mate:
-            self.__display_text(f"Check Mate!! {self.color_value.get(self.__get_opposing_color(self.turn))} Wins!!", 150, 350, (255, 0, 0))
-            self.__display_text(f"Press R to restart", 300, 450, (255, 0, 0))
+            self.__display_text(self.large_font, f"Check Mate!! {self.color_value.get(self.turn)} Wins!!", 250, 350, (255, 0, 0))
+            self.__display_text(self.large_font, "Press R to restart", 300, 450, (255, 0, 0))
         pygame.display.update()
 
-    def __display_text(self, text, x, y, color):
-        text_label = self.large_font.render(f"{text}", 1, color)
+    def __display_moves(self, move):
+        if self.turn == WHITE:
+            self.__display_text(self.small_font, move, self.move_x, self.move_y, (255, 255, 255))
+        else:
+            self.__display_text(self.small_font, move, self.move_x + 50, self.move_y, (255, 255, 255))
+            self.move_y += 20
+
+        if self.move_y > 780:
+            self.move_x = 905
+
+
+    def __display_text(self, font, text, x, y, color):
+        text_label = font.render(f"{text}", 1, color)
         self.win.blit(text_label, (x, y))
 
     def reset(self):
@@ -77,7 +94,6 @@ class Game:
                 return i
         return -1 # Should not happen
 
-
     '''
     Takes in a board and a king position. Calculates all the moves of the opposing player. Returns whether
     or not the given king position is in the list of opponent moves i.e. is in check
@@ -86,10 +102,6 @@ class Game:
         temp_king_pos = self.get_king_position(temp_board, self.__get_opposing_color(color))
         enemy_pieces = self.board.get_player_pieces(color, temp_board)
         current_enemy_moves = self.board.get_player_moves(enemy_pieces, temp_board)
-
-        # print("TURN: ", self.color_value.get(self.turn))
-        # print("KING POS: ", temp_king_pos)
-        # print("MOVES: ", current_enemy_moves)
 
         return temp_king_pos in current_enemy_moves
 
@@ -124,7 +136,7 @@ class Game:
     def __move(self, coordinate):
         if self.selected and coordinate in self.valid_moves:
             self.board.move(self.selected, coordinate)
-            # print(self.selected.notation + ALGEBRAIC_NOTATION[coordinate])
+            self.__display_moves(self.selected.notation + ALGEBRAIC_NOTATION[coordinate])
             self.change_turn()
         else:
             return False
@@ -146,7 +158,6 @@ class Game:
             self.turn = BLACK
 
         if self.is_check_mate(self.board.get_board(), self.turn):
-            # print("CHECK MATE!")
             self.check_mate = True
 
 
@@ -154,50 +165,45 @@ class Game:
         return self.board
 
     def ai_move(self, board):
-        # print("Current: ", self.board.get_board())
-        # print("Desired: ", board)
         current_board = self.board.get_board()
         piece = None
         coordinate = None
 
+        # Find the Piece that was moved and its coordinate
         for i in range(len(board)):
             if current_board[i] != board[i] and board[i] != 0:
                 piece = board[i]
                 coordinate = i
                 break
         if piece:
-            print(f"Piece: {piece}, Coord: {coordinate}")
+            self.__display_moves(piece.notation + ALGEBRAIC_NOTATION[coordinate])
             self.board.move(piece, coordinate)
         else:
-            print("COULTND FIND PIECE")
+            print("COULDN'T FIND PIECE")
         self.change_turn()
 
 
-
-
+    '''
+    Evaluates a given board using the helper functions below
+    '''
     def evaluate(self, depth, board):
-        # print("CHCKMATE: ", self.__checkmate(depth, board))
-        return self.__check(board) + self.__checkmate(depth, board) + self.__mobility() + self.__piece_value()
-
-        # return self.__checkmate(depth, board)
+        return self.__check(board) + self.__checkmate(depth, board) + self.__mobility() + self.__piece_value(board)
 
     def __checkmate(self, depth, board):
-        # print(self.check_mate)
         return CHECK_MATE_BONUS * self.__depth_bonus(depth) if self.is_check_mate(board, self.__get_opposing_color(self.turn)) else 0
 
     def __depth_bonus(self, depth):
         return 1 if depth == 0 else DEPTH_BONUS * depth
 
     def __check(self, board):
-
         return CHECK_BONUS if self.is_in_check(board, self.turn) else 0
 
     def __mobility(self):
         return len(self.valid_moves)
 
-    def __piece_value(self):
+    def __piece_value(self, board):
         piece_value_score = 0
-        pieces = self.board.get_player_pieces(self.turn, self.board.get_board())
+        pieces = self.board.get_player_pieces(self.turn, board)
         for piece in pieces:
             piece_value_score += piece.piece_value
         return piece_value_score

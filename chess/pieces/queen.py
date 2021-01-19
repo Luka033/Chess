@@ -8,7 +8,7 @@ class Queen(Piece):
 
     def __init__(self, tile_index, color):
         super().__init__(tile_index, color)
-        self.piece_value = 900
+        self.piece_value = 2000
         if self.color == WHITE:
             self.img = W_QUEEN
         else:

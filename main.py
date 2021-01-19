@@ -9,10 +9,6 @@ WIN = pygame.display.set_mode((WIDTH + 200, HEIGHT))
 pygame.display.set_caption('Chess')
 
 
-# def display_test(text, x, y):
-#     title_label = title_font.render(text, 1, (255, 255, 255))
-#     WIN.blit(title_label, (x - title_label.get_width() // 2, y - title_label.get_height() // 2))
-
 def get_row_col_from_mouse(pos):
     x, y = pos
     row = y // SQUARE_SIZE
@@ -23,17 +19,14 @@ def main():
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
+    DEPTH = 3
 
 
     while run:
         clock.tick(FPS)
 
         if game.turn == BLACK:
-            value, new_board = minimax(game.board.get_board(), 3, BLACK, game)
-            print("BOARD: ", new_board)
-            print(f"Value {value}")
-            # print("King pos: ", game.get_king_position(new_board))
-            # print("Evaluated: ", game.evaluate(1, new_board))
+            value, new_board = minimax(game.board.get_board(), DEPTH, BLACK, game)
             game.ai_move(new_board)
 
         for event in pygame.event.get():

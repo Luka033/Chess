@@ -8,13 +8,7 @@ WHITE = (255, 255, 255)
 
 
 def minimax(position, depth, max_player, game):
-    # print("Position: ", position)
-    # print("DEPTH: ", depth)
-    # print("MAX PLAYER: ", max_player)
-    # print("GAME: ", game)
-
     if depth == 0 or game.check_mate:
-        print("EVALUATED NOW: ", game.evaluate(depth, position))
         return game.evaluate(depth, position), position
 
     if max_player:

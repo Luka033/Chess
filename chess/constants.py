@@ -10,9 +10,9 @@ BLACK = (0, 0, 0)
 
 
 GREEN_BOX = pygame.transform.scale(pygame.image.load('assets/green_box.png'), (100, 100))
-# BG_BOARD = pygame.transform.scale(pygame.image.load('assets/chess_board.png'), (WIDTH, HEIGHT))
+BG_BOARD = pygame.transform.scale(pygame.image.load('assets/chess_board.png'), (WIDTH, HEIGHT))
 # Numbered board for debugging
-BG_BOARD = pygame.transform.scale(pygame.image.load('assets/numbered_bg.png'), (WIDTH, HEIGHT))
+# BG_BOARD = pygame.transform.scale(pygame.image.load('assets/numbered_bg.png'), (WIDTH, HEIGHT))
 
 # Pieces
 B_PAWN = pygame.image.load('assets/bP.png')
@@ -43,7 +43,7 @@ ALGEBRAIC_NOTATION = ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
                       "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
                       "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
 
-
+# For AI Evaluation
 CHECK_BONUS = 50
 CHECK_MATE_BONUS = 10000
 DEPTH_BONUS = 100
