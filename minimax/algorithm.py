@@ -1,11 +1,4 @@
-from copy import deepcopy
-import pygame
-
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-
-
+from chess.constants import BLACK, WHITE
 
 def minimax(position, depth, max_player, game):
     if depth == 0 or game.check_mate:

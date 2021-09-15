@@ -1,12 +1,8 @@
 import pygame
 from .constants import BLACK, WHITE, ROWS, SQUARE_SIZE, GREEN_BOX
-from .constants import CHECK_BONUS, DEPTH_BONUS, CAPTURED_PIECE_BONUS, CHECK_MATE_BONUS, ALGEBRAIC_NOTATION
+from .constants import CHECK_BONUS, DEPTH_BONUS, CHECK_MATE_BONUS, ALGEBRAIC_NOTATION, LARGE_FONT, SMALL_FONT
 from chess.board import Board
-
-
-
-
-pygame.font.init()
+from chess.board_utils import display_text
 
 class Game:
     def __init__(self, win):
@@ -20,58 +16,49 @@ class Game:
         self.turn = WHITE
         self.valid_moves = []
         self.check_mate = False
-        self.large_font = pygame.font.SysFont("comicsans", 50)
-        self.small_font = pygame.font.SysFont("comicsans", 18)
         self.move_x, self.move_y = 805, 40
         self.__draw_static_text()
 
     def __draw_static_text(self):
         self.win.fill(BLACK)
-        self.__display_text(self.small_font, 'WHITE | BLACK | WHITE | BLACK', 800, 20, (255, 255, 255))
+        display_text(self.win, SMALL_FONT, 'WHITE | BLACK | WHITE | BLACK', 800, 20, (255, 255, 255))
 
     def update(self):
         self.board.draw(self.win)
         if self.selected:
             self.draw_valid_moves(self.valid_moves)
         if self.check_mate:
-            self.__display_text(self.large_font, f"Check Mate!! {self.color_value.get(self.turn)} Wins!!", 250, 350, (255, 0, 0))
-            self.__display_text(self.large_font, "Press R to restart", 300, 450, (255, 0, 0))
+            display_text(self.win, LARGE_FONT, f"Check Mate!! {self.color_value.get(self.turn)} Wins!!", 250, 350, (255, 0, 0))
+            display_text(self.win, LARGE_FONT, "Press R to restart", 300, 450, (255, 0, 0))
         pygame.display.update()
 
     def __display_moves(self, move):
         if self.turn == WHITE:
-            self.__display_text(self.small_font, move, self.move_x, self.move_y, (255, 255, 255))
+            display_text(self.win, SMALL_FONT, move, self.move_x, self.move_y, (255, 255, 255))
         else:
-            self.__display_text(self.small_font, move, self.move_x + 50, self.move_y, (255, 255, 255))
+            display_text(self.win, SMALL_FONT, move, self.move_x + 50, self.move_y, (255, 255, 255))
             self.move_y += 20
 
         if self.move_y > 780:
             self.move_x = 905
 
-
-    def __display_text(self, font, text, x, y, color):
-        text_label = font.render(f"{text}", 1, color)
-        self.win.blit(text_label, (x, y))
-
     def reset(self):
         self._init()
 
     def __get_opposing_color(self, color):
-        if color == WHITE:
-            return BLACK
-        else:
-            return WHITE
+        return BLACK if color == WHITE else WHITE
 
-    '''
-    Takes in a coordinate, if a piece is selected it will make the move on a temporary board to ensure it is valid.
-    Otherwise a piece will be selected and its valid moves will be calculated
-    '''
     def select(self, coordinate):
+        """
+        Takes in a coordinate, if a piece is selected it will make the move on a temporary board to ensure it is valid.
+        Otherwise a piece will be selected and its valid moves will be calculated
+        :param coordinate: integer representing the selected board coordinate
+        :return: boolean representing whether or not a piece has been selected
+        """
         if self.selected:
             destination_coordinate = coordinate
             temp_board = self.simulate_move(self.selected, destination_coordinate, self.board.get_board().copy())
             if self.is_in_check(temp_board, self.__get_opposing_color(self.turn)):
-                print("CHECK!!!")
                 self.selected = None
                 self.select(coordinate)
 
@@ -79,6 +66,8 @@ class Game:
             if not result:
                 self.selected = None
                 self.select(coordinate)
+            else:
+                self.update()
         else:
             piece = self.board.get_piece(coordinate)
             if piece != 0 and piece.color == self.turn:
@@ -88,51 +77,38 @@ class Game:
 
         return False
 
-    def get_king_position(self, board, color):
-        for i in range(len(board)):
-            if str(board[i]) == 'King' and board[i].color == color:
+    def get_king_position(self, current_board, color):
+        for i in range(len(current_board)):
+            if str(current_board[i]) == 'King' and current_board[i].color == color:
                 return i
         return -1 # Should not happen
 
-    '''
-    Takes in a board and a king position. Calculates all the moves of the opposing player. Returns whether
-    or not the given king position is in the list of opponent moves i.e. is in check
-    '''
-    def is_in_check(self, temp_board, color):
-        temp_king_pos = self.get_king_position(temp_board, self.__get_opposing_color(color))
-        enemy_pieces = self.board.get_player_pieces(color, temp_board)
-        current_enemy_moves = self.board.get_player_moves(enemy_pieces, temp_board)
+    def is_in_check(self, current_board, color):
+        temp_king_pos = self.get_king_position(current_board, self.__get_opposing_color(color))
+        enemy_pieces = self.board.get_player_pieces(color, current_board)
+        current_enemy_moves = self.board.get_player_moves(enemy_pieces, current_board)
 
         return temp_king_pos in current_enemy_moves
 
-    def is_check_mate(self, board, color):
-        # Get all current player pieces
-        player_pieces = self.board.get_player_pieces(color, board)
-        # Use that to get all current player moves
+    def is_check_mate(self, current_board, color):
+        player_pieces = self.board.get_player_pieces(color, current_board)
         for piece in player_pieces:
-            current_player_moves = piece.calculate_legal_moves(board)
+            current_player_moves = piece.calculate_legal_moves(current_board)
             for move in current_player_moves:
-                # make every move on the temporary board and return that board and king position
-                _temp_board = self.simulate_move(piece, move, board.copy())
-                # if on of the moves does not result in check i.e. there is a valid move, return false
-                if not self.is_in_check(_temp_board, self.__get_opposing_color(color)):
+                updated_board = self.simulate_move(piece, move, current_board.copy())
+                # if one of the moves does not result in check i.e. there is a valid move, return false
+                if not self.is_in_check(updated_board, self.__get_opposing_color(color)):
                     return False
         return True
 
-    '''
-    Takes in a piece and destination coordinate, creates a copy of the current board and makes the move on the
-    new board. Updates the king position if necessary. Returns the new board and the new king position.
-    '''
-    def simulate_move(self, piece, destination_coordinate, temp_board):
-        piece_position = piece.tile_index
-        temp_board[destination_coordinate] = piece
-        temp_board[piece_position] = 0
-        return temp_board
 
-    '''
-    Takes in a coordinate and ensured the coordinate is one of the valid moves. If true the move will be made.
-    If the move was made by the kind then the king position will be updated. Returns false otherwise.
-    '''
+    def simulate_move(self, piece, destination_coordinate, simulated_board):
+        piece_position = piece.tile_index
+        simulated_board[destination_coordinate] = piece
+        simulated_board[piece_position] = 0
+        return simulated_board
+
+
     def __move(self, coordinate):
         if self.selected and coordinate in self.valid_moves:
             self.board.move(self.selected, coordinate)
@@ -152,14 +128,13 @@ class Game:
 
     def change_turn(self):
         self.selected = None
-        if self.turn == BLACK:
-            self.turn = WHITE
-        else:
-            self.turn = BLACK
+        self.turn = WHITE if self.turn == BLACK else BLACK
 
         if self.is_check_mate(self.board.get_board(), self.turn):
             self.check_mate = True
 
+    def get_current_player(self):
+        return self.turn
 
     def get_board(self):
         return self.board
@@ -183,27 +158,30 @@ class Game:
         self.change_turn()
 
 
-    '''
-    Evaluates a given board using the helper functions below
-    '''
-    def evaluate(self, depth, board):
-        return self.__check(board) + self.__checkmate(depth, board) + self.__mobility() + self.__piece_value(board)
+    def evaluate(self, depth, current_board):
+        """
+        Evaluates a given board using the helper functions below
+        :param depth: integer representing how deep the minimax algorithm went
+        :param current_board:
+        :return: inteer representing the evaluated score
+        """
+        return self.__check(current_board) + self.__checkmate(depth, current_board) + self.__mobility() + self.__piece_value(current_board)
 
-    def __checkmate(self, depth, board):
-        return CHECK_MATE_BONUS * self.__depth_bonus(depth) if self.is_check_mate(board, self.__get_opposing_color(self.turn)) else 0
+    def __checkmate(self, depth, current_board):
+        return CHECK_MATE_BONUS * self.__depth_bonus(depth) if self.is_check_mate(current_board, self.__get_opposing_color(self.turn)) else 0
 
     def __depth_bonus(self, depth):
         return 1 if depth == 0 else DEPTH_BONUS * depth
 
-    def __check(self, board):
-        return CHECK_BONUS if self.is_in_check(board, self.turn) else 0
+    def __check(self, current_board):
+        return CHECK_BONUS if self.is_in_check(current_board, self.__get_opposing_color(self.turn)) else 0
 
     def __mobility(self):
         return len(self.valid_moves)
 
-    def __piece_value(self, board):
+    def __piece_value(self, current_board):
         piece_value_score = 0
-        pieces = self.board.get_player_pieces(self.turn, board)
+        pieces = self.board.get_player_pieces(self.turn, current_board)
         for piece in pieces:
             piece_value_score += piece.piece_value
         return piece_value_score

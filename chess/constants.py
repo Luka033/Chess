@@ -1,13 +1,20 @@
 import pygame
+pygame.font.init()
 
 WIDTH, HEIGHT = 800, 800
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
 
+NUM_TILES = 64
+NUM_TILES_PER_ROW = 8
+
 # RGB colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+
+LARGE_FONT = pygame.font.SysFont("comicsans", 50)
+SMALL_FONT = pygame.font.SysFont("comicsans", 18)
 
 GREEN_BOX = pygame.transform.scale(pygame.image.load('assets/green_box.png'), (100, 100))
 BG_BOARD = pygame.transform.scale(pygame.image.load('assets/chess_board.png'), (WIDTH, HEIGHT))

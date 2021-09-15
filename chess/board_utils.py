@@ -1,7 +1,5 @@
-from chess.constants import ROWS, COLS
+from chess.constants import ROWS, COLS, NUM_TILES, SQUARE_SIZE
 
-NUM_TILES = 64
-NUM_TILES_PER_ROW = 8
 
 # Takes in a piece position and a row number. NOTE that the row is on a 0 index scale so row 1 = 0, row 2 = 1 etc
 def piece_is_in_given_row(piece_position, row):
@@ -13,6 +11,16 @@ def piece_is_in_given_column(piece_position, col):
 
 def is_valid_tile_coordinate(coordinate):
     return (0 <= coordinate < NUM_TILES)
+
+def display_text(win, font, text, x, y, color):
+    text_label = font.render(f"{text}", 1, color)
+    win.blit(text_label, (x, y))
+
+def get_row_col_from_mouse(pos):
+    x, y = pos
+    row = y // SQUARE_SIZE
+    col = x // SQUARE_SIZE
+    return row, col
 
 
 

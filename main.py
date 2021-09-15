@@ -1,6 +1,8 @@
 import pygame
-from chess.constants import WIDTH, HEIGHT, SQUARE_SIZE, ROWS, BLACK
+import time
+from chess.constants import WIDTH, HEIGHT, BLACK
 from chess.game import Game
+from chess.board_utils import get_row_col_from_mouse
 from minimax.algorithm import minimax
 
 FPS = 60
@@ -9,11 +11,6 @@ WIN = pygame.display.set_mode((WIDTH + 200, HEIGHT))
 pygame.display.set_caption('Chess')
 
 
-def get_row_col_from_mouse(pos):
-    x, y = pos
-    row = y // SQUARE_SIZE
-    col = x // SQUARE_SIZE
-    return row, col
 
 def main():
     run = True
@@ -21,13 +18,13 @@ def main():
     game = Game(WIN)
     DEPTH = 3
 
-
     while run:
         clock.tick(FPS)
-
         if game.turn == BLACK:
-            value, new_board = minimax(game.board.get_board(), DEPTH, BLACK, game)
+            start = time.time()
+            value, new_board = minimax(game.board.get_board(), DEPTH, True, game)
             game.ai_move(new_board)
+            print("TIME: ", time.time() - start)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -57,7 +54,7 @@ main()
 #     while run:
 #         WIN.blit(BG_BOARD, (0, 0))
 #
-#         display_test("Press 1 to play AI", 350, 250)
+#         display_text("Press 1 to play AI", 350, 250)
 #         display_test("Press 2 for two player", 350, 350)
 #         display_test("Press R at any time to restart", 350, 450)
 #

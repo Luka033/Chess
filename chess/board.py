@@ -13,25 +13,36 @@ class Board:
         self.board = []
         self.__create_board()
 
-    def draw_squares(self, win):
+    def draw_grid(self, win):
         win.blit(BG_BOARD, (0, 0))
 
-    '''
-    Takes in a list of pieces and a board. Returns a dictionary where keys are pieces and values are the
-    corresponding legal moves
-    '''
-    def get_player_moves(self, pieces, temp_board):
+    def draw(self, win):
+        self.draw_grid(win)
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.board[ROWS * row + col]
+                if piece != 0:
+                    piece.draw(win)
+
+    def get_player_moves(self, pieces, current_board):
+        """
+        :param pieces: list of pieces
+        :param current_board: array representing the current board
+        :return: dictionary where keys are pieces and values are the corresponding legal moves
+        """
         all_moves = set()
         for piece in pieces:
-            all_moves.update(piece.calculate_legal_moves(temp_board))
+            all_moves.update(piece.calculate_legal_moves(current_board))
 
         return list(all_moves)
 
-    '''
-    Returns all pieces of the given color on the given board
-    '''
-    def get_player_pieces(self, color, temp_board):
-        pieces = [piece for piece in temp_board if piece != 0 and piece.color == color]
+    def get_player_pieces(self, color, current_board):
+        """
+        :param color: the color to get pieces for
+        :param current_board: array representing the current board
+        :return: list of all pieces of the given color on the given board
+        """
+        pieces = [piece for piece in current_board if piece != 0 and piece.color == color]
         return pieces
 
     def move(self, piece, coordinate):
@@ -43,11 +54,16 @@ class Board:
         if str(piece) == "Pawn":
             self.__pawn_promotion(piece)
 
-    def __pawn_promotion(self, piece):
-        if piece_is_in_given_row(piece.tile_index, 0) and piece.color == WHITE:
-            self.board[piece.tile_index] = Queen(piece.tile_index, WHITE)
-        if piece_is_in_given_row(piece.tile_index, 7) and piece.color == BLACK:
-            self.board[piece.tile_index] = Queen(piece.tile_index, BLACK)
+    def __pawn_promotion(self, pawn_piece):
+        """
+        Promotes the given pawn piece to a queen if it appears in the first opposing row
+        :param pawn_piece: pawn piece tp be promoted
+        :return:
+        """
+        if piece_is_in_given_row(pawn_piece.tile_index, 0) and pawn_piece.color == WHITE:
+            self.board[pawn_piece.tile_index] = Queen(pawn_piece.tile_index, WHITE)
+        if piece_is_in_given_row(pawn_piece.tile_index, 7) and pawn_piece.color == BLACK:
+            self.board[pawn_piece.tile_index] = Queen(pawn_piece.tile_index, BLACK)
 
     def get_piece(self, coordinate):
         return self.board[coordinate]
@@ -69,9 +85,9 @@ class Board:
                       Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
                       Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
 
-        '''
+        """
         Boards for debugging and quick testing
-        '''
+        """
         # self.board = [0, King(1, BLACK), 0, 0, 0, 0, 0, 0,
         #               0, 0, 0, 0, 0, 0, 0, 0,
         #               0, 0, 0, 0, 0, 0, 0, 0,
@@ -93,7 +109,6 @@ class Board:
         #               0, 0, 0, 0, King(60, WHITE),
         #               0, 0, 0]
 
-
         # self.board = [Rook(0, BLACK), Knight(1, BLACK), Bishop(2, BLACK), Queen(3, BLACK), King(4, BLACK),
         #               Bishop(5, BLACK), Knight(6, BLACK), Rook(7, BLACK),
         #               0, 0, 0, 0, 0, 0, 0, 0,
@@ -104,26 +119,3 @@ class Board:
         #               0, 0, 0, 0, 0, 0, 0, 0,
         #               Rook(56, WHITE), Knight(57, WHITE), Bishop(58, WHITE), Queen(59, WHITE), King(60, WHITE),
         #               Bishop(61, WHITE), Knight(62, WHITE), Rook(63, WHITE)]
-
-
-
-
-    def draw(self, win):
-        self.draw_squares(win)
-        for row in range(ROWS):
-            for col in range(COLS):
-                piece = self.board[ROWS * row + col]
-                if piece != 0:
-                    piece.draw(win)
-
-
-
-
-
-
-
-
-
-
-
-
